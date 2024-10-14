@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Episode Download List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .episode-container {
+            margin-bottom: 15px;
+        }
+        .download-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Download Episodes</h2>
+    <div id="episodeList"></div>
+
+    <script>
+        // Load the JSON file
+        fetch('episode.json')
+            .then(response => response.json())
+            .then(data => {
+                const episodeList = document.getElementById('episodeList');
+                data.episodes.forEach(episode => {
+                    // Extract the Google Drive file ID from the link
+                    const fileId = episode.link.split('/d/')[1].split('/')[0];
+                    const downloadLink = `https://drive.usercontent.google.com/download?id=${fileId}`;
+
+                    // Create the episode container
+                    const episodeContainer = document.createElement('div');
+                    episodeContainer.className = 'episode-container';
+
+                    // Add episode number
+                    const episodeNumber = document.createElement('span');
+                    episodeNumber.textContent = `Episode ${episode.episode}: `;
+                    episodeContainer.appendChild(episodeNumber);
+
+                    // Add download button
+                    const downloadButton = document.createElement('a');
+                    downloadButton.href = downloadLink;
+                    downloadButton.textContent = 'Download';
+                    downloadButton.className = 'download-button';
+                    downloadButton.setAttribute('download', `Episode_${episode.episode}.mp4`);
+                    episodeContainer.appendChild(downloadButton);
+
+                    // Append to episode list
+                    episodeList.appendChild(episodeContainer);
+                });
+            })
+            .catch(error => console.error('Error loading the JSON file:', error));
+    </script>
+
+</body>
+</html>
