@@ -14,7 +14,7 @@
             padding: 0;
         }
         .episode-item {
-            margin: 10px 0;
+            margin-bottom: 20px; /* Jarak antar item episode */
         }
         .download-button {
             padding: 10px;
@@ -50,7 +50,7 @@
                     const listItem = document.createElement('li');
                     listItem.className = 'episode-item';
                     listItem.innerHTML = `
-                        Episode ${ep.episode}: 
+                        <strong>Episode ${ep.episode}</strong><br>
                         <a href="${ep.link}" target="_blank" class="download-button">Download</a>
                     `;
                     episodeList.appendChild(listItem);
