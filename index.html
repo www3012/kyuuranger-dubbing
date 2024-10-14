@@ -3,62 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Episode Download List</title>
+    <title>Download Episodes</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
         }
-        .episode-container {
-            margin-bottom: 15px;
+        .episode-list {
+            list-style: none;
+            padding: 0;
+        }
+        .episode-item {
+            margin: 10px 0;
         }
         .download-button {
+            padding: 10px;
             background-color: #4CAF50;
             color: white;
             border: none;
-            padding: 10px 15px;
+            border-radius: 5px;
             cursor: pointer;
+            text-decoration: none;
+        }
+        .download-button:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
 
-    <h2>Download Episodes</h2>
-    <div id="episodeList"></div>
+    <h1>Download Episodes</h1>
+    <ul class="episode-list" id="episodeList"></ul>
 
     <script>
-        // Load the JSON file
-        fetch('episode.json')
-            .then(response => response.json())
-            .then(data => {
+        // Fungsi untuk fetch data dari episode.json
+        async function loadEpisodes() {
+            try {
+                const response = await fetch('episode.json');
+                if (!response.ok) {
+                    throw new Error('Gagal mengambil data');
+                }
+                const data = await response.json();
                 const episodeList = document.getElementById('episodeList');
-                data.episodes.forEach(episode => {
-                    // Extract the Google Drive file ID from the link
-                    const fileId = episode.link.split('/d/')[1].split('/')[0];
-                    const downloadLink = `https://drive.usercontent.google.com/download?id=${fileId}`;
-
-                    // Create the episode container
-                    const episodeContainer = document.createElement('div');
-                    episodeContainer.className = 'episode-container';
-
-                    // Add episode number
-                    const episodeNumber = document.createElement('span');
-                    episodeNumber.textContent = `Episode ${episode.episode}: `;
-                    episodeContainer.appendChild(episodeNumber);
-
-                    // Add download button
-                    const downloadButton = document.createElement('a');
-                    downloadButton.href = downloadLink;
-                    downloadButton.textContent = 'Download';
-                    downloadButton.className = 'download-button';
-                    downloadButton.setAttribute('download', `Episode_${episode.episode}.mp4`);
-                    episodeContainer.appendChild(downloadButton);
-
-                    // Append to episode list
-                    episodeList.appendChild(episodeContainer);
+                
+                data.episodes.forEach(ep => {
+                    const listItem = document.createElement('li');
+                    listItem.className = 'episode-item';
+                    listItem.innerHTML = `
+                        Episode ${ep.episode}: 
+                        <a href="${ep.link}" target="_blank" class="download-button">Download</a>
+                    `;
+                    episodeList.appendChild(listItem);
                 });
-            })
-            .catch(error => console.error('Error loading the JSON file:', error));
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        // Panggil fungsi untuk load episode
+        loadEpisodes();
     </script>
 
 </body>
