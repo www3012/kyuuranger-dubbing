@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Drive Link Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .link-container {
+            margin-bottom: 10px;
+        }
+        .copy-button {
+            margin-left: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        .copy-all-button {
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Google Drive Link Generator</h2>
+
+    <textarea id="driveLinks" placeholder="Paste your Google Drive file links here, each on a new line..." rows="5" style="width: 100%;"></textarea>
+    <br><br>
+    <button onclick="generateLinks()">Generate Links</button>
+
+    <div id="output" style="margin-top: 20px;"></div>
+
+    <button class="copy-all-button" onclick="copyAll()">Copy All</button>
+
+    <script>
+        function generateLinks() {
+            const input = document.getElementById('driveLinks').value.trim();
+            const links = input.split('\n').map(link => link.trim()).filter(link => link);
+            const outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = ''; // Clear output
+
+            links.forEach(link => {
+                const id = link.split('/d/')[1].split('/')[0];
+                const downloadLink = `https://drive.usercontent.google.com/download?id=${id}`;
+                const linkContainer = document.createElement('div');
+                linkContainer.className = 'link-container';
+                
+                const linkElement = document.createElement('span');
+                linkElement.textContent = downloadLink;
+                linkContainer.appendChild(linkElement);
+
+                const copyButton = document.createElement('button');
+                copyButton.className = 'copy-button';
+                copyButton.textContent = 'Copy';
+                copyButton.onclick = function() {
+                    copyToClipboard(downloadLink);
+                };
+                linkContainer.appendChild(copyButton);
+
+                outputDiv.appendChild(linkContainer);
+            });
+        }
+
+        function copyToClipboard(text) {
+            const tempInput = document.createElement('input');
+            document.body.appendChild(tempInput);
+            tempInput.value = text;
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+            alert('Copied to clipboard!');
+        }
+
+        function copyAll() {
+            const outputDiv = document.getElementById('output');
+            const links = Array.from(outputDiv.querySelectorAll('.link-container span')).map(el => el.textContent).join('\n');
+            copyToClipboard(links);
+        }
+    </script>
+
+</body>
+      </html>
+
+  
